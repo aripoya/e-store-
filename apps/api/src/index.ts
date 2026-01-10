@@ -13,7 +13,12 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // Middleware
 app.use('/*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://jogjabootcamp.com',
+    'https://www.jogjabootcamp.com'
+  ],
   credentials: true,
 }));
 
