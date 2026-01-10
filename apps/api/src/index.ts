@@ -16,14 +16,10 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // Middleware
 app.use('/*', cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://jogjabootcamp.com',
-    'https://www.jogjabootcamp.com',
-    'https://e-store-46d.pages.dev'
-  ],
-  credentials: true,
+  origin: '*',
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: false,
 }));
 
 // Health check
