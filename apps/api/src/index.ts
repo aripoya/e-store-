@@ -20,7 +20,8 @@ app.use('/*', cors({
     'http://localhost:5173',
     'http://localhost:3000',
     'https://jogjabootcamp.com',
-    'https://www.jogjabootcamp.com'
+    'https://www.jogjabootcamp.com',
+    'https://e-store-46d.pages.dev'
   ],
   credentials: true,
 }));

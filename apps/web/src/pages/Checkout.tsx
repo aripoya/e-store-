@@ -98,7 +98,8 @@ export default function Checkout() {
       });
     } catch (error: any) {
       console.error('Checkout error:', error);
-      alert(error.response?.data?.error || 'Failed to process checkout');
+      const errorMessage = error.response?.data?.error || error.message || 'Failed to process checkout. Please try again.';
+      alert(errorMessage);
       setLoading(false);
     }
   };
