@@ -60,10 +60,10 @@ payment.post('/create-transaction', async (c) => {
         console.log('Product details:', { id: product.id, title: product.title, price, quantity });
 
         return {
-          id: product.id,
+          id: String(product.id),
           price: price,
           quantity: quantity,
-          name: product.title,
+          name: String(product.title),
         };
       })
     );
@@ -74,7 +74,7 @@ payment.post('/create-transaction', async (c) => {
     const parameter = {
       transaction_details: {
         order_id: orderId,
-        gross_amount: grossAmount,
+        gross_amount: Math.round(grossAmount),
       },
       item_details: itemDetails,
       customer_details: customerDetails || {
