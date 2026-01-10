@@ -26,23 +26,40 @@ export default function Checkout() {
   useEffect(() => {
     if (items.length === 0) {
       navigate('/cart');
+      return;
     }
 
-    const fetchClientKey = async () => {
+    const loadMidtransScript = async () => {
       try {
         const response = await getClientKey();
-        const key = response.data.data.clientKey;
+        const clientKey = response.data.data.clientKey;
         
-        const snapScript = document.querySelector('script[src*="snap.js"]');
-        if (snapScript) {
-          snapScript.setAttribute('data-client-key', key);
+        // Remove existing script if any
+        const existingScript = document.querySelector('script[src*="snap.js"]');
+        if (existingScript) {
+          existingScript.remove();
         }
+
+        // Create new script with client key
+        const script = document.createElement('script');
+        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+        script.setAttribute('data-client-key', clientKey);
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+          console.log('Midtrans Snap loaded successfully');
+        };
+
+        script.onerror = () => {
+          console.error('Failed to load Midtrans Snap');
+        };
       } catch (error) {
         console.error('Failed to fetch client key:', error);
       }
     };
 
-    fetchClientKey();
+    loadMidtransScript();
   }, [items, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +93,12 @@ export default function Checkout() {
 
       const response = await createTransaction(transactionItems, customerDetails);
       const snapToken = response.data.data.token;
+
+      if (!window.snap) {
+        alert('Payment system is loading. Please try again in a moment.');
+        setLoading(false);
+        return;
+      }
 
       window.snap.pay(snapToken, {
         onSuccess: function(result: any) {
