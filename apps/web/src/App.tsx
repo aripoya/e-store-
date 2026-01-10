@@ -7,6 +7,10 @@ import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentPending from './pages/PaymentPending';
+import PaymentFailed from './pages/PaymentFailed';
 
 function App() {
   return (
@@ -20,6 +24,10 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="payment/success" element={<PaymentSuccess />} />
+            <Route path="payment/pending" element={<PaymentPending />} />
+            <Route path="payment/failed" element={<PaymentFailed />} />
           </Route>
         </Routes>
       </BrowserRouter>

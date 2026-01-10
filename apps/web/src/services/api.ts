@@ -30,4 +30,9 @@ export const getProductReviews = (productId: number) =>
 export const createReview = (productId: number, rating: number, comment: string) => 
   api.post('/reviews', { productId, rating, comment });
 
+// Payment
+export const createTransaction = (items: any[], customerDetails: any) => 
+  api.post('/payment/create-transaction', { items, customerDetails });
+export const getClientKey = () => api.get('/payment/client-key');
+
 export default api;
