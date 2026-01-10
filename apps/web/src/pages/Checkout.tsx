@@ -82,14 +82,23 @@ export default function Checkout() {
 
     try {
       const token = localStorage.getItem('token');
-      if (token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('Token exists:', !!token);
+      
+      if (!token) {
+        alert('Please login to continue');
+        navigate('/login');
+        setLoading(false);
+        return;
       }
+      
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       const transactionItems = items.map(item => ({
         productId: item.id,
         quantity: item.quantity,
       }));
+      
+      console.log('Transaction items:', transactionItems);
 
       const response = await createTransaction(transactionItems, customerDetails);
       const snapToken = response.data.data.token;

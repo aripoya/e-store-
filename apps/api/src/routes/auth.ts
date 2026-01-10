@@ -57,7 +57,7 @@ auth.post('/register', async (c) => {
     // Generate JWT
     const token = await sign(
       { userId, email, role: 'customer', exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 },
-      c.env.JWT_SECRET || 'default-secret-key'
+      c.env.JWT_SECRET
     );
 
     return c.json({
@@ -103,7 +103,7 @@ auth.post('/login', async (c) => {
     // Generate JWT
     const token = await sign(
       { userId: user.id, email: user.email, role: user.role, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 },
-      c.env.JWT_SECRET || 'default-secret-key'
+      c.env.JWT_SECRET
     );
 
     return c.json({
