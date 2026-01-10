@@ -18,10 +18,18 @@ payment.post('/create-transaction', async (c) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const decoded = await verify(token, c.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = await verify(token, c.env.JWT_SECRET);
+    } catch (err) {
+      console.error('JWT verification failed:', err);
+      return c.json({ success: false, error: 'Invalid token' }, 401);
+    }
     const userId = decoded.userId as number;
 
     const { items, customerDetails } = await c.req.json();
+    console.log('Received items:', items);
+    console.log('Customer details:', customerDetails);
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return c.json({ success: false, error: 'Items are required' }, 400);
@@ -33,12 +41,14 @@ payment.post('/create-transaction', async (c) => {
     const itemDetails = await Promise.all(
       items.map(async (item: any) => {
         const db = c.env.e_store_db;
+        console.log('Fetching product:', item.productId);
         const product = await db
           .prepare('SELECT * FROM products WHERE id = ?')
           .bind(item.productId)
           .first();
 
         if (!product) {
+          console.error(`Product ${item.productId} not found`);
           throw new Error(`Product ${item.productId} not found`);
         }
 
@@ -46,6 +56,8 @@ payment.post('/create-transaction', async (c) => {
         const quantity = Number(item.quantity);
         const subtotal = price * quantity;
         grossAmount += subtotal;
+
+        console.log('Product details:', { id: product.id, title: product.title, price, quantity });
 
         return {
           id: product.id,
@@ -55,6 +67,9 @@ payment.post('/create-transaction', async (c) => {
         };
       })
     );
+
+    console.log('Item details:', itemDetails);
+    console.log('Gross amount:', grossAmount);
 
     const parameter = {
       transaction_details: {
@@ -71,6 +86,8 @@ payment.post('/create-transaction', async (c) => {
     const serverKey = c.env.MIDTRANS_SERVER_KEY;
     const authString = btoa(serverKey + ':');
 
+    console.log('Calling Midtrans API with parameter:', JSON.stringify(parameter));
+
     const response = await fetch('https://app.sandbox.midtrans.com/snap/v1/transactions', {
       method: 'POST',
       headers: {
@@ -81,8 +98,10 @@ payment.post('/create-transaction', async (c) => {
     });
 
     const result = await response.json() as any;
+    console.log('Midtrans response:', result);
 
     if (!response.ok) {
+      console.error('Midtrans API error:', result);
       return c.json({ success: false, error: 'Failed to create transaction', details: result }, 500);
     }
 
@@ -104,7 +123,13 @@ payment.post('/create-transaction', async (c) => {
     });
   } catch (error: any) {
     console.error('Payment error:', error);
-    return c.json({ success: false, error: error.message || 'Failed to create transaction' }, 500);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', JSON.stringify(error));
+    return c.json({ 
+      success: false, 
+      error: error.message || 'Failed to create transaction',
+      details: error.toString()
+    }, 500);
   }
 });
 
