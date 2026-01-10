@@ -51,7 +51,7 @@ payment.post('/create-transaction', async (c) => {
           id: product.id,
           price: price,
           quantity: quantity,
-          name: product.name,
+          name: product.title,
         };
       })
     );
