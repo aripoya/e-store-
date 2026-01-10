@@ -98,11 +98,19 @@ payment.post('/create-transaction', async (c) => {
     });
 
     const result = await response.json() as any;
-    console.log('Midtrans response:', result);
+    console.log('Midtrans response status:', response.status);
+    console.log('Midtrans response:', JSON.stringify(result));
 
     if (!response.ok) {
-      console.error('Midtrans API error:', result);
-      return c.json({ success: false, error: 'Failed to create transaction', details: result }, 500);
+      console.error('Midtrans API error status:', response.status);
+      console.error('Midtrans API error details:', JSON.stringify(result));
+      const errorMessage = result.error_messages?.join(', ') || result.message || 'Failed to create transaction';
+      return c.json({ 
+        success: false, 
+        error: errorMessage,
+        details: result,
+        status: response.status
+      }, 500);
     }
 
     const db = c.env.e_store_db;
