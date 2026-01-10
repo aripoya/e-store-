@@ -1,11 +1,14 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import auth from './routes/auth';
+import payment from './routes/payment';
 
 // Types
 type Bindings = {
   e_store_db: D1Database;
   JWT_SECRET: string;
+  MIDTRANS_SERVER_KEY: string;
+  MIDTRANS_CLIENT_KEY: string;
 };
 
 // Initialize app
@@ -32,6 +35,9 @@ app.get('/', (c) => {
 
 // Auth routes
 app.route('/api/auth', auth);
+
+// Payment routes
+app.route('/api/payment', payment);
 
 // Get all products
 app.get('/api/products', async (c) => {
