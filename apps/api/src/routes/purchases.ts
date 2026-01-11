@@ -31,63 +31,68 @@ purchases.get('/my-purchases', authMiddleware, async (c) => {
     const userId = c.get('userId');
     const db = c.env.e_store_db;
 
-    // Get all orders for this user with their items and product details
-    const query = `
+    console.log('Fetching purchases for user:', userId);
+
+    // First, get all orders for this user
+    const ordersQuery = `
       SELECT 
-        o.id as order_id,
-        o.midtrans_order_id,
-        o.total_price,
-        o.status,
-        o.created_at as order_date,
-        oi.product_id,
-        oi.price as paid_price,
-        p.title,
-        p.slug,
-        p.description,
-        p.preview_image,
-        p.file_url,
-        d.download_count,
-        d.last_downloaded_at
-      FROM orders o
-      JOIN order_items oi ON o.id = oi.order_id
-      JOIN products p ON oi.product_id = p.id
-      LEFT JOIN downloads d ON d.order_id = o.id AND d.product_id = p.id AND d.user_id = ?
-      WHERE o.user_id = ?
-      ORDER BY o.created_at DESC
+        id as order_id,
+        midtrans_order_id,
+        total_price,
+        status,
+        created_at as order_date
+      FROM orders
+      WHERE user_id = ?
+      ORDER BY created_at DESC
     `;
 
-    const { results } = await db.prepare(query).bind(userId, userId).all();
+    const { results: ordersResults } = await db.prepare(ordersQuery).bind(userId).all();
+    console.log('Found orders:', ordersResults?.length || 0);
 
-    // Group by order
-    const orders = results.reduce((acc: any[], row: any) => {
-      let order = acc.find((o: any) => o.order_id === row.order_id);
-      
-      if (!order) {
-        order = {
-          order_id: row.order_id,
-          midtrans_order_id: row.midtrans_order_id,
-          total_price: row.total_price,
-          status: row.status,
-          order_date: row.order_date,
-          products: [],
-        };
-        acc.push(order);
-      }
-
-      order.products.push({
-        product_id: row.product_id,
-        title: row.title,
-        slug: row.slug,
-        description: row.description,
-        preview_image: row.preview_image,
-        file_url: row.file_url,
-        paid_price: row.paid_price,
-        download_count: row.download_count || 0,
-        last_downloaded_at: row.last_downloaded_at,
+    if (!ordersResults || ordersResults.length === 0) {
+      return c.json({
+        success: true,
+        data: [],
       });
+    }
 
-      return acc;
-    }, []);
+    // For each order, get the items and product details
+    const orders = await Promise.all(
+      ordersResults.map(async (order: any) => {
+        const itemsQuery = `
+          SELECT 
+            oi.product_id,
+            oi.price as paid_price,
+            p.title,
+            p.slug,
+            p.description,
+            p.preview_image,
+            p.file_url,
+            d.download_count,
+            d.last_downloaded_at
+          FROM order_items oi
+          JOIN products p ON oi.product_id = p.id
+          LEFT JOIN downloads d ON d.order_id = ? AND d.product_id = p.id AND d.user_id = ?
+          WHERE oi.order_id = ?
+        `;
+
+        const { results: itemsResults } = await db
+          .prepare(itemsQuery)
+          .bind(order.order_id, userId, order.order_id)
+          .all();
+
+        return {
+          order_id: order.order_id,
+          midtrans_order_id: order.midtrans_order_id,
+          total_price: order.total_price,
+          status: order.status,
+          order_date: order.order_date,
+          products: itemsResults || [],
+        };
+      })
+    );
+
+    console.log('Processed orders:', orders.length);
 
     return c.json({
       success: true,
