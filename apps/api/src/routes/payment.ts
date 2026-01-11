@@ -116,9 +116,9 @@ payment.post('/create-transaction', async (c) => {
     const db = c.env.e_store_db;
     await db
       .prepare(
-        'INSERT INTO orders (user_id, order_id, total_amount, status) VALUES (?, ?, ?, ?)'
+        'INSERT INTO orders (user_id, midtrans_order_id, total_price, status) VALUES (?, ?, ?, ?)'
       )
-      .bind(userId, orderId, grossAmount, 'pending')
+      .bind(userId, orderId, Math.round(grossAmount), 'pending')
       .run();
 
     return c.json({
@@ -168,7 +168,7 @@ payment.post('/notification', async (c) => {
 
     const db = c.env.e_store_db;
     await db
-      .prepare('UPDATE orders SET status = ? WHERE order_id = ?')
+      .prepare('UPDATE orders SET status = ? WHERE midtrans_order_id = ?')
       .bind(orderStatus, orderId)
       .run();
 
