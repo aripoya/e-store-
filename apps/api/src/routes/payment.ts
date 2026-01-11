@@ -81,6 +81,11 @@ payment.post('/create-transaction', async (c) => {
         first_name: 'Customer',
         email: 'customer@example.com',
       },
+      callbacks: {
+        finish: 'https://e-store-46d.pages.dev/payment/success',
+        error: 'https://e-store-46d.pages.dev/payment/failed',
+        pending: 'https://e-store-46d.pages.dev/payment/pending',
+      },
     };
 
     const serverKey = c.env.MIDTRANS_SERVER_KEY;
