@@ -119,12 +119,34 @@ payment.post('/create-transaction', async (c) => {
     }
 
     const db = c.env.e_store_db;
-    await db
+    
+    // Insert order
+    const orderResult = await db
       .prepare(
         'INSERT INTO orders (user_id, midtrans_order_id, total_price, status) VALUES (?, ?, ?, ?)'
       )
       .bind(userId, orderId, Math.round(grossAmount), 'pending')
       .run();
+
+    // Get the inserted order ID
+    const insertedOrderId = orderResult.meta.last_row_id;
+
+    // Insert order items
+    for (const item of items) {
+      const product = await db
+        .prepare('SELECT * FROM products WHERE id = ?')
+        .bind(item.productId)
+        .first();
+
+      if (product) {
+        await db
+          .prepare(
+            'INSERT INTO order_items (order_id, product_id, price) VALUES (?, ?, ?)'
+          )
+          .bind(insertedOrderId, item.productId, Number(product.price))
+          .run();
+      }
+    }
 
     return c.json({
       success: true,
