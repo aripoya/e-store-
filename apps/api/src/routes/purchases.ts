@@ -116,6 +116,7 @@ purchases.get('/download/:productId', authMiddleware, async (c) => {
       SELECT 
         o.id as order_id,
         o.status,
+        o.created_at,
         p.file_url,
         p.title
       FROM orders o
@@ -134,11 +135,33 @@ purchases.get('/download/:productId', authMiddleware, async (c) => {
       }, 403);
     }
 
+    // Check expiry date (30 days after purchase)
+    const purchaseDate = new Date(purchase.created_at);
+    const expiryDate = new Date(purchaseDate);
+    expiryDate.setDate(expiryDate.getDate() + 30);
+    const now = new Date();
+
+    if (now > expiryDate) {
+      return c.json({
+        success: false,
+        error: 'Download link has expired. Downloads are available for 30 days after purchase.'
+      }, 403);
+    }
+
     // Check if download record exists
     const downloadRecord = await db
       .prepare('SELECT * FROM downloads WHERE user_id = ? AND product_id = ? AND order_id = ?')
       .bind(userId, productId, purchase.order_id)
       .first();
+
+    // Check download limit (max 5 downloads)
+    const MAX_DOWNLOADS = 5;
+    if (downloadRecord && downloadRecord.download_count >= MAX_DOWNLOADS) {
+      return c.json({
+        success: false,
+        error: `Download limit reached. You can download this product maximum ${MAX_DOWNLOADS} times.`
+      }, 403);
+    }
 
     if (downloadRecord) {
       // Update existing download record

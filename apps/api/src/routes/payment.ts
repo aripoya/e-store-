@@ -171,9 +171,24 @@ payment.post('/create-transaction', async (c) => {
 payment.post('/notification', async (c) => {
   try {
     const notification = await c.req.json();
+    
+    console.log('Midtrans notification received:', JSON.stringify(notification));
+    
     const orderId = notification.order_id;
     const transactionStatus = notification.transaction_status;
     const fraudStatus = notification.fraud_status;
+    const grossAmount = notification.gross_amount;
+
+    // Verify signature (optional but recommended for production)
+    // const signatureKey = notification.signature_key;
+    // const serverKey = c.env.MIDTRANS_SERVER_KEY;
+    // const expectedSignature = crypto.createHash('sha512')
+    //   .update(`${orderId}${transactionStatus}${grossAmount}${serverKey}`)
+    //   .digest('hex');
+    // if (signatureKey !== expectedSignature) {
+    //   console.error('Invalid signature');
+    //   return c.json({ success: false, error: 'Invalid signature' }, 401);
+    // }
 
     let orderStatus = 'pending';
 
@@ -193,11 +208,15 @@ payment.post('/notification', async (c) => {
       orderStatus = 'pending';
     }
 
+    console.log(`Updating order ${orderId} to status: ${orderStatus}`);
+
     const db = c.env.e_store_db;
-    await db
+    const result = await db
       .prepare('UPDATE orders SET status = ? WHERE midtrans_order_id = ?')
       .bind(orderStatus, orderId)
       .run();
+
+    console.log('Update result:', result);
 
     return c.json({ success: true, message: 'Notification processed' });
   } catch (error: any) {

@@ -173,11 +173,16 @@ export default function MyPurchases() {
                       <h3 className="font-semibold text-lg mb-1">{product.title}</h3>
                       <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
                       <p className="text-blue-600 font-semibold">{formatPrice(product.paid_price)}</p>
-                      {product.download_count > 0 && (
-                        <p className="text-sm text-gray-500 mt-1">
-                          Downloaded {product.download_count} time{product.download_count > 1 ? 's' : ''}
-                          {product.last_downloaded_at && ` • Last: ${formatDate(product.last_downloaded_at)}`}
-                        </p>
+                      {order.status === 'paid' && (
+                        <div className="mt-2 space-y-1">
+                          <p className="text-sm text-gray-500">
+                            📥 Downloads: {product.download_count || 0}/5
+                            {product.last_downloaded_at && ` • Last: ${formatDate(product.last_downloaded_at)}`}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            ⏰ Available until {formatDate(new Date(new Date(order.order_date).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString())}
+                          </p>
+                        </div>
                       )}
                     </div>
 
