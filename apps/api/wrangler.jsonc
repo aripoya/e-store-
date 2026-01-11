@@ -16,6 +16,12 @@
 			"database_name": "e-store-db",
 			"database_id": "451458dd-4eba-4c4f-b1d4-992580a2dd15"
 		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "FILES_BUCKET",
+			"bucket_name": "e-store-files"
+		}
 	]
 	/**
 	 * Smart Placement

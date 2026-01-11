@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import auth from './routes/auth';
 import payment from './routes/payment';
 import purchases from './routes/purchases';
+import admin from './routes/admin';
 
 // Types
 type Bindings = {
@@ -10,6 +11,7 @@ type Bindings = {
   JWT_SECRET: string;
   MIDTRANS_SERVER_KEY: string;
   MIDTRANS_CLIENT_KEY: string;
+  FILES_BUCKET: R2Bucket;
 };
 
 // Initialize app
@@ -39,6 +41,9 @@ app.route('/api/payment', payment);
 
 // Purchases routes
 app.route('/api', purchases);
+
+// Admin routes
+app.route('/api/admin', admin);
 
 // Get all products
 app.get('/api/products', async (c) => {
