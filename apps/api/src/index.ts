@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import auth from './routes/auth';
 import payment from './routes/payment';
+import purchases from './routes/purchases';
 
 // Types
 type Bindings = {
@@ -35,6 +36,9 @@ app.route('/api/auth', auth);
 
 // Payment routes
 app.route('/api/payment', payment);
+
+// Purchases routes
+app.route('/api', purchases);
 
 // Get all products
 app.get('/api/products', async (c) => {

@@ -35,4 +35,8 @@ export const createTransaction = (items: any[], customerDetails: any) =>
   api.post('/payment/create-transaction', { items, customerDetails });
 export const getClientKey = () => api.get('/payment/client-key');
 
+// Purchases
+export const getMyPurchases = () => api.get('/my-purchases');
+export const downloadProduct = (productId: number) => api.get(`/download/${productId}`);
+
 export default api;

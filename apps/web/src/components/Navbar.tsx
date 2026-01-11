@@ -21,6 +21,11 @@ export default function Navbar() {
             <Link to="/products" className="text-gray-600 hover:text-blue-600">
               Produk
             </Link>
+            {user && (
+              <Link to="/my-purchases" className="text-gray-600 hover:text-blue-600">
+                📦 Pembelian Saya
+              </Link>
+            )}
             <Link to="/cart" className="text-gray-600 hover:text-blue-600 relative">
               🛒 Keranjang
               {totalItems > 0 && (
