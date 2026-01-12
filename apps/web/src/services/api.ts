@@ -56,6 +56,16 @@ export const adminUploadFile = (file: File) => {
   });
 };
 
+export const adminUploadFileToGoogleDrive = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return api.post('/admin/upload-gdrive', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 // Admin - Orders
 export const adminGetOrders = () => api.get('/admin/orders');
 

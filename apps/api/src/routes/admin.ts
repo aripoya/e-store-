@@ -1,10 +1,14 @@
 import { Hono } from 'hono';
 import { verify } from 'hono/jwt';
+import { GoogleDriveUploader } from '../utils/googleDrive';
 
 type Bindings = {
   e_store_db: D1Database;
   JWT_SECRET: string;
   FILES_BUCKET: R2Bucket;
+  GOOGLE_DRIVE_CLIENT_EMAIL?: string;
+  GOOGLE_DRIVE_PRIVATE_KEY?: string;
+  GOOGLE_DRIVE_FOLDER_ID?: string;
 };
 
 const admin = new Hono<{ Bindings: Bindings }>();
@@ -222,6 +226,59 @@ admin.post('/upload', adminAuth, async (c) => {
   } catch (error: any) {
     console.error('Upload error:', error);
     return c.json({ success: false, error: 'Failed to upload file' }, 500);
+  }
+});
+
+// POST /admin/upload-gdrive - Upload file to Google Drive
+admin.post('/upload-gdrive', adminAuth, async (c) => {
+  try {
+    const formData = await c.req.formData();
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return c.json({ success: false, error: 'No file provided' }, 400);
+    }
+
+    // Check if Google Drive credentials are configured
+    if (!c.env.GOOGLE_DRIVE_CLIENT_EMAIL || !c.env.GOOGLE_DRIVE_PRIVATE_KEY) {
+      return c.json({ 
+        success: false, 
+        error: 'Google Drive not configured. Please set GOOGLE_DRIVE_CLIENT_EMAIL and GOOGLE_DRIVE_PRIVATE_KEY secrets.' 
+      }, 400);
+    }
+    
+    // Initialize Google Drive uploader
+    const uploader = new GoogleDriveUploader({
+      clientEmail: c.env.GOOGLE_DRIVE_CLIENT_EMAIL,
+      privateKey: c.env.GOOGLE_DRIVE_PRIVATE_KEY,
+      folderId: c.env.GOOGLE_DRIVE_FOLDER_ID,
+    });
+    
+    // Generate unique filename
+    const timestamp = Date.now();
+    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const fileName = `${timestamp}-${originalName}`;
+    
+    // Upload to Google Drive
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await uploader.uploadFile(arrayBuffer, fileName, file.type);
+    
+    return c.json({
+      success: true,
+      data: {
+        fileId: result.fileId,
+        fileName: fileName,
+        originalName: file.name,
+        size: file.size,
+        type: file.type,
+        url: result.webContentLink, // Direct download link
+        viewUrl: result.webViewLink, // View in browser link
+        storage: 'google-drive',
+      },
+    });
+  } catch (error: any) {
+    console.error('Google Drive upload error:', error);
+    return c.json({ success: false, error: error.message || 'Failed to upload to Google Drive' }, 500);
   }
 });
 
