@@ -148,16 +148,25 @@ export class GoogleDriveUploader {
 
   // Helper: Convert PEM to ArrayBuffer
   private pemToArrayBuffer(pem: string): ArrayBuffer {
+    // Handle both actual newlines and literal \n strings
     const pemContents = pem
-      .replace('-----BEGIN PRIVATE KEY-----', '')
-      .replace('-----END PRIVATE KEY-----', '')
-      .replace(/\s/g, '');
-    const binaryString = atob(pemContents);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+      .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+      .replace(/-----END PRIVATE KEY-----/g, '')
+      .replace(/\\n/g, '') // Remove literal \n
+      .replace(/\n/g, '')  // Remove actual newlines
+      .replace(/\r/g, '')  // Remove carriage returns
+      .replace(/\s/g, ''); // Remove any other whitespace
+    
+    try {
+      const binaryString = atob(pemContents);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    } catch (error) {
+      throw new Error(`Failed to decode private key: ${error instanceof Error ? error.message : 'Invalid base64'}`);
     }
-    return bytes.buffer;
   }
 
   // Helper: Base64 URL encode
