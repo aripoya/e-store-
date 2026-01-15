@@ -101,9 +101,9 @@ export class GoogleDriveUploader {
 
     const multipartBody = new TextEncoder().encode(metadataPart + filePart + closeDelimiter);
 
-    // Upload to Google Drive
+    // Upload to Google Drive (with Shared Drive support)
     const uploadResponse = await fetch(
-      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,webContentLink',
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,webContentLink&supportsAllDrives=true&supportsTeamDrives=true',
       {
         method: 'POST',
         headers: {
@@ -133,7 +133,7 @@ export class GoogleDriveUploader {
 
   // Make file publicly accessible
   private async makeFilePublic(fileId: string, accessToken: string): Promise<void> {
-    await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+    await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions?supportsAllDrives=true&supportsTeamDrives=true`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
