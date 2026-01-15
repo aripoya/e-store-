@@ -24,7 +24,7 @@ export default function AdminProducts() {
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [storageType, setStorageType] = useState<'r2' | 'google-drive'>('r2');
+  const [storageType, setStorageType] = useState<'r2' | 'google-drive'>('google-drive');
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
