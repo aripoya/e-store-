@@ -45,21 +45,23 @@ export default function Products() {
         {products.length === 0 ? (
           <p className="text-gray-500 text-center py-12">Belum ada produk tersedia</p>
         ) : (
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {products.map((product) => (
               <Link 
                 key={product.id} 
                 to={`/products/${product.slug}`}
-                className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
+                className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden flex flex-col"
               >
-                <img 
-                  src={product.preview_image || '/placeholder.png'} 
-                  alt={product.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="font-semibold mb-2">{product.title}</h3>
-                  <p className="text-blue-600 font-bold">
+                <div className="relative w-full" style={{ paddingBottom: '133.33%' }}>
+                  <img 
+                    src={product.preview_image || '/placeholder.png'} 
+                    alt={product.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-3 md:p-4 flex-1 flex flex-col">
+                  <h3 className="font-semibold text-sm md:text-base mb-2 line-clamp-2 flex-1">{product.title}</h3>
+                  <p className="text-blue-600 font-bold text-sm md:text-base">
                     Rp {product.price.toLocaleString('id-ID')}
                   </p>
                 </div>
