@@ -6,7 +6,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">E-Store</h1>
+          <h1 className="text-5xl font-bold mb-4">Jogjabootcamp E-Store</h1>
           <p className="text-xl mb-8">Temukan ebook dan produk digital berkualitas</p>
           <Link 
             to="/products" 
