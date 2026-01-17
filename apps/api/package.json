@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"hono": "^4.11.3",
-		"midtrans-client": "^1.4.3"
+		"midtrans-client": "^1.4.3",
+		"zod": "^4.3.5"
 	}
 }

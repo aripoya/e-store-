@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { verify } from 'hono/jwt';
+import { z } from 'zod';
 import { GoogleDriveUploader } from '../utils/googleDrive';
 
 type Bindings = {
@@ -12,6 +13,17 @@ type Bindings = {
 };
 
 const admin = new Hono<{ Bindings: Bindings }>();
+
+// Validation schemas
+const productSchema = z.object({
+  title: z.string().min(3, 'Title minimal 3 karakter').max(200, 'Title maksimal 200 karakter'),
+  slug: z.string().min(3, 'Slug minimal 3 karakter').max(200, 'Slug maksimal 200 karakter'),
+  description: z.string().min(10, 'Description minimal 10 karakter').max(5000, 'Description maksimal 5000 karakter').optional(),
+  price: z.number().positive('Price harus lebih dari 0').max(1000000000, 'Price terlalu besar'),
+  preview_image: z.string().url('Preview image harus URL valid').optional().or(z.literal('')),
+  detail_image: z.string().url('Detail image harus URL valid').optional().or(z.literal('')),
+  file_url: z.string().min(1, 'File URL harus diisi'),
+});
 
 // Admin auth middleware
 const adminAuth = async (c: any, next: any) => {
@@ -67,15 +79,18 @@ admin.get('/products', adminAuth, async (c) => {
 // POST /admin/products - Create new product
 admin.post('/products', adminAuth, async (c) => {
   try {
-    const { title, slug, description, price, preview_image, detail_image, file_url } = await c.req.json();
+    const body = await c.req.json();
     
-    if (!title || !slug || !price || !file_url) {
+    // Validate input with Zod
+    const validation = productSchema.safeParse(body);
+    if (!validation.success) {
       return c.json({ 
         success: false, 
-        error: 'Missing required fields: title, slug, price, file_url' 
+        error: validation.error.issues[0].message 
       }, 400);
     }
     
+    const { title, slug, description, price, preview_image, detail_image, file_url } = validation.data;
     const db = c.env.e_store_db;
     
     // Check if slug already exists

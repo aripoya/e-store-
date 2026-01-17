@@ -179,16 +179,21 @@ payment.post('/notification', async (c) => {
     const fraudStatus = notification.fraud_status;
     const grossAmount = notification.gross_amount;
 
-    // Verify signature (optional but recommended for production)
-    // const signatureKey = notification.signature_key;
-    // const serverKey = c.env.MIDTRANS_SERVER_KEY;
-    // const expectedSignature = crypto.createHash('sha512')
-    //   .update(`${orderId}${transactionStatus}${grossAmount}${serverKey}`)
-    //   .digest('hex');
-    // if (signatureKey !== expectedSignature) {
-    //   console.error('Invalid signature');
-    //   return c.json({ success: false, error: 'Invalid signature' }, 401);
-    // }
+    // Verify signature for security (ENABLED for production)
+    const signatureKey = notification.signature_key;
+    const serverKey = c.env.MIDTRANS_SERVER_KEY;
+    
+    // Create SHA512 hash for signature verification
+    const encoder = new TextEncoder();
+    const data = encoder.encode(`${orderId}${transactionStatus}${grossAmount}${serverKey}`);
+    const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const expectedSignature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    if (signatureKey !== expectedSignature) {
+      console.error('Invalid signature - potential fraud attempt');
+      return c.json({ success: false, error: 'Invalid signature' }, 401);
+    }
 
     let orderStatus = 'pending';
 

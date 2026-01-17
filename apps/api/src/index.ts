@@ -17,12 +17,12 @@ type Bindings = {
 // Initialize app
 const app = new Hono<{ Bindings: Bindings }>();
 
-// Middleware
+// Middleware - Restrict CORS to specific domains
 app.use('/*', cors({
-  origin: '*',
+  origin: ['https://jogjabootcamp.com', 'http://localhost:5173'],
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: false,
+  credentials: true,
 }));
 
 // Health check

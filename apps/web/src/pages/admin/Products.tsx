@@ -66,6 +66,32 @@ export default function AdminProducts() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // File size validation (max 100MB)
+    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+    if (file.size > maxSize) {
+      alert('File terlalu besar! Maksimal 100MB');
+      e.target.value = '';
+      return;
+    }
+
+    // File type validation (allow common digital product formats)
+    const allowedTypes = [
+      'application/pdf',
+      'application/zip',
+      'application/x-zip-compressed',
+      'application/x-rar-compressed',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
+      alert('Tipe file tidak didukung! Gunakan PDF, ZIP, RAR, Excel, atau Word');
+      e.target.value = '';
+      return;
+    }
+
     try {
       setUploading(true);
       const token = localStorage.getItem('token');
