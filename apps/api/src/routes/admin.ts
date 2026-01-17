@@ -67,7 +67,7 @@ admin.get('/products', adminAuth, async (c) => {
 // POST /admin/products - Create new product
 admin.post('/products', adminAuth, async (c) => {
   try {
-    const { title, slug, description, price, preview_image, file_url } = await c.req.json();
+    const { title, slug, description, price, preview_image, detail_image, file_url } = await c.req.json();
     
     if (!title || !slug || !price || !file_url) {
       return c.json({ 
@@ -93,10 +93,10 @@ admin.post('/products', adminAuth, async (c) => {
     
     const result = await db
       .prepare(`
-        INSERT INTO products (title, slug, description, price, preview_image, file_url)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO products (title, slug, description, price, preview_image, detail_image, file_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `)
-      .bind(title, slug, description || '', price, preview_image || '', file_url)
+      .bind(title, slug, description || '', price, preview_image || '', detail_image || '', file_url)
       .run();
     
     return c.json({
@@ -116,7 +116,7 @@ admin.post('/products', adminAuth, async (c) => {
 admin.put('/products/:id', adminAuth, async (c) => {
   try {
     const productId = parseInt(c.req.param('id'));
-    const { title, slug, description, price, preview_image, file_url } = await c.req.json();
+    const { title, slug, description, price, preview_image, detail_image, file_url } = await c.req.json();
     
     const db = c.env.e_store_db;
     
@@ -134,10 +134,10 @@ admin.put('/products/:id', adminAuth, async (c) => {
       .prepare(`
         UPDATE products 
         SET title = ?, slug = ?, description = ?, price = ?, 
-            preview_image = ?, file_url = ?, updated_at = CURRENT_TIMESTAMP
+            preview_image = ?, detail_image = ?, file_url = ?, updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `)
-      .bind(title, slug, description, price, preview_image, file_url, productId)
+      .bind(title, slug, description, price, preview_image, detail_image, file_url, productId)
       .run();
     
     return c.json({

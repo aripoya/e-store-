@@ -10,6 +10,7 @@ interface Product {
   description: string;
   price: number;
   preview_image: string;
+  detail_image?: string;
 }
 
 export default function ProductDetail() {
@@ -81,7 +82,7 @@ export default function ProductDetail() {
             {/* Image */}
             <div className="md:w-1/2">
               <img 
-                src={product.preview_image || '/placeholder.png'} 
+                src={product.detail_image || product.preview_image || '/placeholder.png'} 
                 alt={product.title}
                 className="w-full h-96 object-cover"
               />

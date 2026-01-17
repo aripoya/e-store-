@@ -11,6 +11,7 @@ interface Product {
   description: string;
   price: number;
   preview_image: string;
+  detail_image?: string;
   file_url: string;
   total_sales: number;
   total_revenue: number;
@@ -31,6 +32,7 @@ export default function AdminProducts() {
     description: '',
     price: '',
     preview_image: '',
+    detail_image: '',
     file_url: '',
   });
 
@@ -125,6 +127,7 @@ export default function AdminProducts() {
         description: '',
         price: '',
         preview_image: '',
+        detail_image: '',
         file_url: '',
       });
       fetchProducts();
@@ -141,7 +144,8 @@ export default function AdminProducts() {
       slug: product.slug,
       description: product.description,
       price: product.price.toString(),
-      preview_image: product.preview_image,
+      preview_image: product.preview_image || '',
+      detail_image: product.detail_image || '',
       file_url: product.file_url,
     });
     setShowModal(true);
@@ -207,6 +211,7 @@ export default function AdminProducts() {
               description: '',
               price: '',
               preview_image: '',
+              detail_image: '',
               file_url: '',
             });
             setShowModal(true);
@@ -368,15 +373,30 @@ export default function AdminProducts() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Preview Image URL
+                  Preview Image URL (Portrait - untuk list produk)
                 </label>
                 <input
                   type="url"
                   value={formData.preview_image}
                   onChange={(e) => setFormData({ ...formData, preview_image: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://example.com/portrait-image.jpg"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+                <p className="text-xs text-gray-500 mt-1">Gambar portrait (3:4) untuk tampilan di halaman list produk</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Detail Image URL (Landscape - untuk detail produk)
+                </label>
+                <input
+                  type="url"
+                  value={formData.detail_image}
+                  onChange={(e) => setFormData({ ...formData, detail_image: e.target.value })}
+                  placeholder="https://example.com/landscape-image.jpg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Gambar landscape (16:9) untuk tampilan di halaman detail produk</p>
               </div>
 
               <div>
