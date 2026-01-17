@@ -96,6 +96,31 @@ const verifyPassword = async (password: string, storedHash: string): Promise<boo
   }
 };
 
+// Legacy SHA-256 password verification (for existing users)
+const verifyLegacyPassword = async (password: string, storedHash: string): Promise<boolean> => {
+  try {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + 'e-store-salt');
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    const newHash = btoa(String.fromCharCode(...new Uint8Array(hash)));
+    return newHash === storedHash;
+  } catch (error) {
+    return false;
+  }
+};
+
+// Detect if password hash is legacy format (SHA-256) or new format (PBKDF2)
+const isLegacyHash = (hash: string): boolean => {
+  try {
+    const decoded = atob(hash);
+    // PBKDF2 hash has 48 bytes (16 salt + 32 hash)
+    // SHA-256 hash has 32 bytes
+    return decoded.length === 32;
+  } catch {
+    return false;
+  }
+};
+
 // Register
 auth.post('/register', async (c) => {
   try {
@@ -176,10 +201,35 @@ auth.post('/login', async (c) => {
       return c.json({ success: false, error: 'Email atau password salah' }, 401);
     }
 
-    // Verify password
-    const isValid = await verifyPassword(password, user.password_hash);
+    // Check if password hash is legacy format and verify accordingly
+    let isValid = false;
+    let needsMigration = false;
+    
+    if (isLegacyHash(user.password_hash)) {
+      // Try legacy SHA-256 verification
+      isValid = await verifyLegacyPassword(password, user.password_hash);
+      needsMigration = isValid; // If valid, we need to migrate to new format
+    } else {
+      // Try new PBKDF2 verification
+      isValid = await verifyPassword(password, user.password_hash);
+    }
+    
     if (!isValid) {
       return c.json({ success: false, error: 'Email atau password salah' }, 401);
+    }
+
+    // Auto-migrate legacy password to new PBKDF2 format
+    if (needsMigration) {
+      try {
+        const newHash = await hashPassword(password);
+        await db.prepare(
+          'UPDATE users SET password_hash = ? WHERE id = ?'
+        ).bind(newHash, user.id).run();
+        console.log(`Password migrated to PBKDF2 for user: ${user.email}`);
+      } catch (error) {
+        console.error('Password migration failed:', error);
+        // Don't fail login if migration fails, just log it
+      }
     }
 
     // Generate JWT
