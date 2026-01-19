@@ -2,6 +2,7 @@ export interface PainPoint {
   icon: string;
   title: string;
   description: string;
+  image?: string;
 }
 
 export interface Solution {

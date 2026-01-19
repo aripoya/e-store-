@@ -12,14 +12,24 @@ export default function PainPoints() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {painPoints.map((point, index) => (
-            <Card key={index} hover className="p-8 border-t-4 border-gold">
-              <div className="text-5xl mb-4">{point.icon}</div>
-              <h3 className="text-xl font-bold text-navy-dark mb-3">
-                {point.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {point.description}
-              </p>
+            <Card key={index} hover className={point.image ? 'overflow-hidden' : 'p-8 border-t-4 border-gold'}>
+              {point.image ? (
+                <img 
+                  src={point.image} 
+                  alt={point.title}
+                  className="w-full h-auto"
+                />
+              ) : (
+                <>
+                  <div className="text-5xl mb-4">{point.icon}</div>
+                  <h3 className="text-xl font-bold text-navy-dark mb-3">
+                    {point.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {point.description}
+                  </p>
+                </>
+              )}
             </Card>
           ))}
         </div>

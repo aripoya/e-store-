@@ -11,6 +11,7 @@ export const painPoints: PainPoint[] = [
     icon: '🤯',
     title: 'Bingung Mulai Dari Mana?',
     description: 'Digitalisasi terasa overwhelming. Terlalu banyak pilihan, tidak tahu harus mulai dari langkah apa.',
+    image: 'https://cover.jogjabootcamp.com/Card%20halaman%20depan/Bingung%20memulai%20dari%20mana%3F.png',
   },
   {
     icon: '🤖',
