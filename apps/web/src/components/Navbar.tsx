@@ -14,7 +14,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src="https://cover.jogjabootcamp.com/Logo-Symbol%20%26%20Typography.png" 
+              src="https://cover.jogjabootcamp.com/Logo-Symbol%20%26%20Typography_1.png" 
               alt="Jogjabootcamp" 
               className="h-10"
             />
