@@ -1,11 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-navy-primary: #1a365d;
+  --color-navy-secondary: #2c5282;
+  --color-navy-dark: #0f172a;
+  --color-gold: #d4a853;
+  --color-gold-hover: #c9973f;
+  
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Sans 3', sans-serif;
+}
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-body);
 }
