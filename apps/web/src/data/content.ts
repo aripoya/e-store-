@@ -23,6 +23,7 @@ export const painPoints: PainPoint[] = [
     icon: '📉',
     title: 'Tertinggal dari Kompetitor?',
     description: 'Kompetitor sudah go digital, bisnis Anda masih jalan di tempat.',
+    image: 'https://cover.jogjabootcamp.com/Card%20halaman%20depan/Tertinggal%20dari%20kompetitor.png',
   },
 ];
 
