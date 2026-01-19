@@ -17,6 +17,7 @@ export const painPoints: PainPoint[] = [
     icon: '🤖',
     title: 'AI Terasa Rumit?',
     description: 'Semua orang bicara tentang AI, tapi bagaimana cara pakainya untuk bisnis Anda?',
+    image: 'https://cover.jogjabootcamp.com/Card%20halaman%20depan/AI%20terasa%20rumit%20card.png',
   },
   {
     icon: '📉',
