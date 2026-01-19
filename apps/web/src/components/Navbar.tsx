@@ -12,8 +12,12 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="text-xl font-bold text-blue-600">
-            Jogjabootcamp E-Store
+          <Link to="/" className="flex items-center">
+            <img 
+              src="https://cover.jogjabootcamp.com/Logo-Symbol%20%26%20Typography.png" 
+              alt="Jogjabootcamp" 
+              className="h-10"
+            />
           </Link>
 
           {/* Navigation */}
