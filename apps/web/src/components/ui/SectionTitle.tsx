@@ -19,7 +19,7 @@ export default function SectionTitle({
   if (highlight) {
     const parts = children?.toString().split(highlight);
     return (
-      <h2 className={`text-3xl md:text-4xl font-heading font-bold mb-12 ${textColor} ${alignment}`}>
+      <h2 className={`text-3xl md:text-4xl font-heading font-extrabold mb-12 tracking-tight ${textColor} ${alignment}`}>
         {parts?.[0]}
         <span className="text-gold">{highlight}</span>
         {parts?.[1]}
@@ -28,7 +28,7 @@ export default function SectionTitle({
   }
   
   return (
-    <h2 className={`text-3xl md:text-4xl font-heading font-bold mb-12 ${textColor} ${alignment}`}>
+    <h2 className={`text-3xl md:text-4xl font-heading font-extrabold mb-12 tracking-tight ${textColor} ${alignment}`}>
       {children}
     </h2>
   );

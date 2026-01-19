@@ -12,14 +12,14 @@ export default function Hero() {
       <div className="container mx-auto px-4 relative z-10">
         {/* Badge */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex items-center gap-2 px-6 py-2 border-2 border-gold rounded-full text-gold font-semibold">
+          <div className="inline-flex items-center gap-2 px-6 py-2 border-2 border-gold rounded-full text-gold font-bold">
             <span>🚀</span>
-            <span className="text-sm md:text-base">PLATFORM EDUKASI DIGITAL #1 UNTUK UMKM</span>
+            <span className="text-sm md:text-base font-extrabold tracking-wide">PLATFORM EDUKASI DIGITAL #1 UNTUK UMKM</span>
           </div>
         </div>
 
         {/* Headline */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-center mb-6 leading-tight">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold text-center mb-6 leading-tight tracking-tight">
           Transformasi Bisnis Anda ke Era Digital dengan{' '}
           <span className="text-gold">AI</span>
         </h1>
