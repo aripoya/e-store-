@@ -1,43 +1,30 @@
-import { useState } from 'react';
 import Button from '../ui/Button';
+import { getQuizURL, trackCTAClick } from '../../utils/tracking';
 
 export default function CTA() {
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // TODO: Implement newsletter signup
-    alert(`Terima kasih! Kami akan mengirim info ke ${email}`);
-    setEmail('');
+  const handleQuizClick = () => {
+    trackCTAClick('bottom_section');
   };
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="bg-gradient-to-br from-navy-primary to-navy-secondary rounded-3xl shadow-2xl p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-            Siap Memulai Transformasi Digital?
-          </h2>
-          <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
-            Daftar sekarang dan dapatkan akses gratis ke materi pengenalan digitalisasi UMKM
-          </p>
-
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Masukkan email Anda"
-                required
-                className="flex-1 px-6 py-3 rounded-lg text-navy-dark focus:outline-none focus:ring-2 focus:ring-gold"
-              />
-              <Button type="submit" variant="primary">
-                Daftar Sekarang
-              </Button>
-            </div>
-          </form>
-        </div>
+    <section className="py-20 bg-gradient-to-r from-gold to-orange-500">
+      <div className="container mx-auto px-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white">
+          Mulai Transformasi Digital Anda Sekarang
+        </h2>
+        <p className="text-xl mb-8 max-w-2xl mx-auto text-white">
+          Ikuti quiz 3 menit untuk mengetahui posisi bisnis Anda dan 
+          dapatkan roadmap transformasi digital yang tepat.
+        </p>
+        <a 
+          href={getQuizURL()}
+          onClick={handleQuizClick}
+          className="inline-block"
+        >
+          <Button variant="outline" className="bg-white text-gold hover:bg-gray-100 border-white text-lg px-10 py-4 font-bold shadow-xl transform hover:scale-105 transition">
+            Mulai Quiz Gratis →
+          </Button>
+        </a>
       </div>
     </section>
   );

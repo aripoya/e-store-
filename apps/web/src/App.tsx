@@ -15,11 +15,16 @@ import PaymentFailed from './pages/PaymentFailed';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/Products';
 import AdminOrders from './pages/admin/Orders';
+import { Analytics } from './components/Analytics';
+import { SEO } from './components/SEO';
+import MobileStickyButton from './components/MobileStickyButton';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <SEO />
+        <Analytics />
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomeLanding />} />
@@ -38,6 +43,7 @@ function App() {
             <Route path="payment/failed" element={<PaymentFailed />} />
           </Route>
         </Routes>
+        <MobileStickyButton />
       </BrowserRouter>
     </AuthProvider>
   );

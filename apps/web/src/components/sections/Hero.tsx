@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
 import { stats } from '../../data/content';
+import { getQuizURL, trackCTAClick } from '../../utils/tracking';
 
 export default function Hero() {
+  const handleQuizClick = () => {
+    trackCTAClick('hero_section');
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-navy-primary to-navy-secondary text-white py-20 md:py-32 overflow-hidden">
       {/* Decorative circles */}
@@ -31,14 +36,36 @@ export default function Hero() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Button variant="primary">
-            Mulai Belajar Gratis
-          </Button>
+          <a 
+            href={getQuizURL()} 
+            onClick={handleQuizClick}
+            className="inline-block"
+          >
+            <Button variant="primary">
+              Cek Posisi Bisnis Anda Sekarang →
+            </Button>
+          </a>
           <Link to="/products">
             <Button variant="outline">
-              Lihat Kursus →
+              Lihat Kursus
             </Button>
           </Link>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-sm mb-16">
+          <div className="flex items-center gap-2">
+            <span className="text-green-400 text-lg">✓</span>
+            <span className="text-gray-200">500+ Pebisnis Tergabung</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-green-400 text-lg">✓</span>
+            <span className="text-gray-200">Gratis 100%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-green-400 text-lg">✓</span>
+            <span className="text-gray-200">Hasil dalam 3 Menit</span>
+          </div>
         </div>
 
         {/* Stats */}
