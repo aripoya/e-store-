@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -7,7 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -28,10 +29,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <SEO
+        title="Login - Jogjabootcamp E-Store"
+        description="Masuk ke akun Jogjabootcamp E-Store Anda untuk mengakses pembelian dan download produk."
+      />
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-          
+
           {error && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
               {error}

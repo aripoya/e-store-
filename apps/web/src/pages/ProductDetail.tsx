@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { getProduct } from '../services/api';
 import { useCartStore } from '../store/cartStore';
 
@@ -14,14 +15,16 @@ interface Product {
 }
 
 export default function ProductDetail() {
+  // ... (hooks remain same)
   const { slug } = useParams<{ slug: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
-  
+
   const { addItem, items } = useCartStore();
 
   useEffect(() => {
+    // ...
     const fetchProduct = async () => {
       try {
         const response = await getProduct(slug!);
@@ -35,6 +38,7 @@ export default function ProductDetail() {
     fetchProduct();
   }, [slug]);
 
+  // ... (isInCart, handleAddToCart remain same)
   const isInCart = product ? items.some(item => item.id === product.id) : false;
 
   const handleAddToCart = () => {
@@ -62,6 +66,7 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
+        <SEO title="Produk Tidak Ditemukan - Jogjabootcamp" />
         <p className="text-gray-500 mb-4">Produk tidak ditemukan</p>
         <Link to="/products" className="text-blue-600 hover:underline">
           ← Kembali ke Produk
@@ -72,31 +77,51 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <SEO
+        title={`${product.title} - Jogjabootcamp E-Store`}
+        description={product.description.substring(0, 160)}
+        image={product.preview_image}
+        url={`https://estore.jogjabootcamp.com/products/${product.slug}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.title,
+          "image": product.preview_image,
+          "description": product.description,
+          "offers": {
+            "@type": "Offer",
+            "url": `https://estore.jogjabootcamp.com/products/${product.slug}`,
+            "priceCurrency": "IDR",
+            "price": product.price,
+            "availability": "https://schema.org/InStock"
+          }
+        }}
+      />
       <div className="container mx-auto px-4">
         <Link to="/products" className="text-blue-600 hover:underline mb-6 inline-block">
           ← Kembali ke Produk
         </Link>
-        
+
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="md:flex">
             {/* Image */}
             <div className="md:w-1/2">
-              <img 
-                src={product.detail_image || product.preview_image || '/placeholder.png'} 
+              <img
+                src={product.detail_image || product.preview_image || '/placeholder.png'}
                 alt={product.title}
                 className="w-full h-96 object-cover"
               />
             </div>
-            
+
             {/* Info */}
             <div className="md:w-1/2 p-8">
               <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
               <p className="text-gray-600 mb-6">{product.description}</p>
-              
+
               <div className="text-3xl font-bold text-blue-600 mb-6">
                 Rp {product.price.toLocaleString('id-ID')}
               </div>
-              
+
               {isInCart ? (
                 <Link
                   to="/cart"
@@ -105,14 +130,14 @@ export default function ProductDetail() {
                   ✓ Lihat Keranjang
                 </Link>
               ) : (
-                <button 
+                <button
                   className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                   onClick={handleAddToCart}
                 >
                   {added ? '✓ Ditambahkan!' : '🛒 Tambah ke Keranjang'}
                 </button>
               )}
-              
+
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h3 className="font-semibold mb-2">✅ Termasuk:</h3>
                 <ul className="text-gray-600 space-y-1">

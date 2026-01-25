@@ -1,15 +1,33 @@
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Jogjabootcamp E-Store - Marketplace Ebook & Produk Digital"
+        description="Pusat ebook, course, dan aset digital berkualitas untuk meningkatkan skill dan bisnismu. Instant download, pembayaran mudah."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Jogjabootcamp E-Store",
+          "url": "https://estore.jogjabootcamp.com",
+          "logo": "https://jogjabootcamp.com/logo.png",
+          "description": "Platform edukasi digital terbaik untuk UMKM.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Yogyakarta",
+            "addressCountry": "ID"
+          }
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-4">Jogjabootcamp E-Store</h1>
           <p className="text-xl mb-8">Temukan ebook dan produk digital berkualitas</p>
-          <Link 
-            to="/products" 
+          <Link
+            to="/products"
             className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
           >
             Lihat Produk

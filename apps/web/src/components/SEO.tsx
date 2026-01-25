@@ -5,13 +5,15 @@ interface SEOProps {
   description?: string;
   image?: string;
   url?: string;
+  jsonLd?: Record<string, any>;
 }
 
 export const SEO = ({ 
   title = 'JogjaBootcamp - Transformasi Digital UMKM dengan AI',
   description = 'Platform edukasi digital #1 untuk UMKM Indonesia. Belajar transformasi bisnis ke era digital dengan AI dari praktisi berpengalaman. Gratis!',
   image = 'https://jogjabootcamp.com/og-image.jpg',
-  url = 'https://jogjabootcamp.com'
+  url = 'https://estore.jogjabootcamp.com',
+  jsonLd
 }: SEOProps) => {
   return (
     <Helmet>
@@ -32,6 +34,13 @@ export const SEO = ({
       <meta name="twitter:image" content={image} />
       
       <link rel="canonical" href={url} />
+
+      {/* JSON-LD Structured Data */}
+      {jsonLd && (
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
+      )}
     </Helmet>
   );
 };

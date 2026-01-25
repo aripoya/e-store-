@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
@@ -9,7 +10,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -41,10 +42,14 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <SEO
+        title="Daftar Akun - Jogjabootcamp E-Store"
+        description="Buat akun baru di Jogjabootcamp E-Store. Akses ribuan produk digital berkualitas untuk bisnis Anda."
+      />
       <div className="max-w-md w-full">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-2xl font-bold text-center mb-6">Daftar Akun</h1>
-          
+
           {error && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
               {error}

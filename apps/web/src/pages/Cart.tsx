@@ -9,10 +9,10 @@ export default function Cart() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 text-center">
           <div className="text-6xl mb-4">🛒</div>
-          <h1 className="text-2xl font-bold mb-4">Keranjang Kosong</h1>
+          <h2 className="text-2xl font-bold mb-4">Keranjang Kosong</h2>
           <p className="text-gray-600 mb-6">Belum ada produk di keranjang kamu</p>
-          <Link 
-            to="/products" 
+          <Link
+            to="/products"
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           >
             Lihat Produk
@@ -32,13 +32,13 @@ export default function Cart() {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div key={item.id} className="bg-white rounded-lg shadow p-4 flex gap-4">
-                <img 
-                  src={item.preview_image || '/placeholder.png'} 
+                <img
+                  src={item.preview_image || '/placeholder.png'}
                   alt={item.title}
                   className="w-24 h-24 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <Link 
+                  <Link
                     to={`/products/${item.slug}`}
                     className="font-semibold hover:text-blue-600"
                   >
@@ -69,7 +69,7 @@ export default function Cart() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6 sticky top-24">
               <h2 className="text-xl font-bold mb-4">Ringkasan</h2>
-              
+
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Jumlah Produk</span>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { getProducts } from '../services/api';
 
 interface Product {
@@ -39,22 +40,34 @@ export default function Products() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <SEO
+        title="Katalog Produk - Jogjabootcamp E-Store"
+        description="Temukan koleksi lengkap ebook, course video, dan aset digital berkualitas untuk meningkatkan bisnis Anda."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Katalog Produk Jogjabootcamp",
+          "description": "Koleksi lengkap produk digital untuk UMKM",
+          "url": "https://estore.jogjabootcamp.com/products",
+          "numberOfItems": products.length
+        }}
+      />
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Semua Produk</h1>
-        
+
         {products.length === 0 ? (
           <p className="text-gray-500 text-center py-12">Belum ada produk tersedia</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {products.map((product) => (
-              <Link 
-                key={product.id} 
+              <Link
+                key={product.id}
                 to={`/products/${product.slug}`}
                 className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden flex flex-col"
               >
                 <div className="relative w-full" style={{ paddingBottom: '133.33%' }}>
-                  <img 
-                    src={product.preview_image || '/placeholder.png'} 
+                  <img
+                    src={product.preview_image || '/placeholder.png'}
                     alt={product.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
